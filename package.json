@@ -1,0 +1,70 @@
+{
+  "name": "lieu",
+  "version": "0.0.1",
+  "description": "Javascript plugin for localize string.",
+  "main": "dist/lieu.cjs",
+  "module": "dist/lieu.es.js",
+  "jsdelivr": "dist/lieu.umd.min.js",
+  "umd:main": "dist/lieu.umd.js",
+  "cdn": "dist/lieu.umd.min.js",
+  "scripts": {
+    "test": "jest",
+    "cover": "jest --coverage",
+    "lint": "eslint src/lieu.es.js src/lieu.umd.js",
+    "build": "rollup --config --sourcemap"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeadrateMSK/lieu.git"
+  },
+  "keywords": [
+    "plugin",
+    "js",
+    "localize",
+    "localiztion"
+  ],
+  "author": "LeadrateMSK <web@leadrate.pro>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LeadrateMSK/lieu/issues"
+  },
+  "homepage": "https://github.com/LeadrateMSK/lieu#readme",
+  "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/eslint-parser": "^7.18.2",
+    "@babel/plugin-transform-runtime": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/runtime": "^7.18.3",
+    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-replace": "^4.0.0",
+    "babel-jest": "^28.1.1",
+    "babel-plugin-annotate-pure-calls": "^0.4.0",
+    "eslint": "^8.17.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.5.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-standard": "^5.0.0",
+    "jest": "^28.1.1",
+    "jest-environment-jsdom": "^28.1.1",
+    "json-file": "^0.1.0",
+    "prettier": "^2.6.2",
+    "rollup": "^2.75.6",
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/lieu.js"
+    ],
+    "testMatch": [
+      "<rootDir>/__test__/*.test.js"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
+  }
+}
