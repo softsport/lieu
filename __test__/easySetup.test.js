@@ -6,6 +6,4 @@ import testDom from './test-dom';
 
 beforeAll(() => {
     document.body.innerHTML = testDom();
-})
-
-
+});
