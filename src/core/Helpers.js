@@ -1,4 +1,4 @@
-class Utils {
+class Helpers {
     // Checks if passed data is object or not
     static isObject(data) {
         return typeof data === 'object';
@@ -22,4 +22,4 @@ class Utils {
     }
 }
 
-export default Utils;
+export default Helpers;

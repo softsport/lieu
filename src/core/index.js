@@ -1,4 +1,4 @@
-import Utils from './utils';
+import Helpers from './Helpers';
 
 /**
  * @param initialData<Object>
@@ -15,10 +15,6 @@ class Lieu {
     onGetLang = () => {};
 
     constructor(initialData) {
-        if (!Utils.isObject(initialData)) {
-            throw Error('Initial data is not an object type!');
-        }
-
         this.initialData = initialData;
 
         this.initLieu();
@@ -36,18 +32,12 @@ class Lieu {
     initLanguages() {
         let initialLanguages = this.initialData?.languages;
 
-        if (Utils.isObject(initialLanguages)) {
+        if (Helpers.isObject(initialLanguages)) {
             this.setLanguages(initialLanguages);
         } else {
-            initialLanguages = Utils.fromJson(initialLanguages); // return null if lang not in json
+            initialLanguages = Helpers.fromJson(initialLanguages); // return null if lang not in json
 
-            if (initialLanguages) {
-                this.setLanguages(initialLanguages);
-            } else {
-                throw Error(
-                    'Initial data property "languages" is not an object or json type!'
-                );
-            }
+            this.setLanguages(initialLanguages);
         }
     }
 
@@ -67,29 +57,15 @@ class Lieu {
         const attr = this.initialData?.attributeName;
 
         if (attr) {
-            if (typeof attr === 'string') {
-                this.attributeName = attr;
-            } else {
-                throw Error('Property "attributeName" is not a string!');
-            }
+            this.attributeName = attr;
         }
     }
 
-    /** Set languages class field from initial data if languages number two or more
+    /** Set languages from initial data in languages class field
     @param langs<Object>
     */
     setLanguages(langs) {
-        const langsCount = Object.keys(langs).length;
-
-        if (langsCount >= 2) {
-            this.languages = langs;
-        } else {
-            throw Error(
-                `Set two or more languages in initial data! You have set ${
-                    langsCount === 1 ? 'one language' : 'none'
-                }.`
-            );
-        }
+        this.languages = langs;
     }
 
     // Set initial language from languages
@@ -106,14 +82,6 @@ class Lieu {
 
                     break;
                 }
-            }
-
-            if (!this.initialLanguage) {
-                console.warn(
-                    'Initial language not found in "languages". Initial language will be set automatically.'
-                );
-
-                this.setInitialLanguageAuto();
             }
         } else {
             this.setInitialLanguageAuto();
@@ -145,10 +113,6 @@ class Lieu {
     @param langKey<String>
     */
     setLang(langKey) {
-        if (!langKey) {
-            throw Error(`Argument for setLang is ${typeof langKey}`);
-        }
-
         const oldLang = this.currentLanguage;
 
         this.currentLanguage = this.languages[langKey];
@@ -172,13 +136,7 @@ class Lieu {
 
             const localeText = locales[locale];
 
-            if (localeText) {
-                elem.innerHTML = localeText;
-            } else {
-                console.warn(
-                    `Data-localize attribute '${locale}' not found in current language`
-                );
-            }
+            elem.innerHTML = localeText;
         });
     }
 
@@ -187,15 +145,8 @@ class Lieu {
     */
     localize(localeKey) {
         const locales = this.currentLanguage.locales;
-        let locale = null;
 
-        if (locales[locale]) {
-            locale = locales[locale];
-        } else {
-            console.warn(`Locale with key ${localeKey} not found!`);
-        }
-
-        return locale;
+        return locales[localeKey];
     }
 
     /** Return value from currentLanguage.locales or null
@@ -215,25 +166,13 @@ class Lieu {
     @param langKey<String> not required
     */
     getLang(langKey) {
-        let language;
-
-        if (langKey) {
-            if (this.languages[langKey]) {
-                language = this.languages[langKey];
-            } else {
-                console.warn(
-                    `Language with ${langKey} key not found! Return current language`
-                );
-
-                language = this.currentLanguage;
-            }
-        } else {
-            language = this.currentLanguage;
-        }
-
         this.onGetLang();
 
-        return language;
+        if (langKey) {
+            return this.languages[langKey];
+        } else {
+            return this.currentLanguage;
+        }
     }
 }
 
