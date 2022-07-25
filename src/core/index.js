@@ -1,10 +1,10 @@
 import Helpers from './Helpers';
+import { STORAGE_KEY } from './const';
 
 /**
  * @param initialData<Object>
  */
-
-class Lieu {
+export default class Lieu {
     initialData;
     languages = null;
     initialLanguage = null;
@@ -91,7 +91,7 @@ class Lieu {
     // Set initial language if initial language is not set in initial data
     setInitialLanguageAuto() {
         // Todo improve
-        const storageLangKey = localStorage.getItem('language');
+        const storageLangKey = window.localStorage?.getItem(STORAGE_KEY);
         const langKeys = Object.keys(this.languages);
         let langKey = langKeys[0];
 
@@ -116,7 +116,7 @@ class Lieu {
         const oldLang = this.currentLanguage;
 
         this.currentLanguage = this.languages[langKey];
-        localStorage.setItem('language', langKey);
+        window.localStorage?.setItem(STORAGE_KEY, langKey);
 
         this.localizeDomElems();
 
@@ -129,10 +129,10 @@ class Lieu {
             document.querySelectorAll(`[${this.attributeName}]`)
         );
 
-        const locales = this.currentLanguage.locales;
+        const { locales } = this.currentLanguage;
 
         localeElems.forEach((elem) => {
-            const locale = elem.dataset.localize;
+            const locale = elem.getAttribute(this.attributeName);
 
             const localeText = locales[locale];
 
@@ -144,7 +144,7 @@ class Lieu {
     @param localeKey<String>
     */
     localize(localeKey) {
-        const locales = this.currentLanguage.locales;
+        const { locales } = this.currentLanguage;
 
         return locales[localeKey];
     }
@@ -170,10 +170,13 @@ class Lieu {
 
         if (langKey) {
             return this.languages[langKey];
-        } else {
-            return this.currentLanguage;
         }
+
+        return this.currentLanguage;
+    }
+
+    // Returns object of all languages
+    getLangs() {
+        return this.languages;
     }
 }
-
-export default Lieu;
