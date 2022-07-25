@@ -1,5 +1,9 @@
 import Utils from './utils';
 
+/**
+ * @param initialData<Object>
+ */
+
 class Lieu {
     initialData;
     languages = null;
@@ -20,6 +24,7 @@ class Lieu {
         this.initLieu();
     }
 
+    // Class initialization
     initLieu() {
         this.initLanguages();
         this.setHooks();
@@ -27,7 +32,7 @@ class Lieu {
         this.setInitialLanguage();
     }
 
-    // Set languages in class if languages is object or json
+    // Set class field languages if languages from inittial data is object or json
     initLanguages() {
         let initialLanguages = this.initialData?.languages;
 
@@ -46,6 +51,7 @@ class Lieu {
         }
     }
 
+    // Set hooks if they exist in inital data
     setHooks() {
         if (typeof this.initialData.onSetLang === 'function') {
             this.onSetLang = this.initialData.onSetLang;
@@ -56,8 +62,9 @@ class Lieu {
         }
     }
 
+    // Set custom data attribute
     setAttributeName() {
-        const attr = this.initialData.attributeName;
+        const attr = this.initialData?.attributeName;
 
         if (attr) {
             if (typeof attr === 'string') {
@@ -68,7 +75,9 @@ class Lieu {
         }
     }
 
-    // Set languages if languages number 2 or more
+    /** Set languages class field from initial data if languages number two or more
+    @param langs<Object>
+    */
     setLanguages(langs) {
         const langsCount = Object.keys(langs).length;
 
@@ -111,6 +120,7 @@ class Lieu {
         }
     }
 
+    // Set initial language if initial language is not set in initial data
     setInitialLanguageAuto() {
         // Todo improve
         const storageLangKey = localStorage.getItem('language');
@@ -131,6 +141,9 @@ class Lieu {
         this.setLang(langKey);
     }
 
+    /** Set new lang by string key from languages class field
+    @param langKey<String>
+    */
     setLang(langKey) {
         if (!langKey) {
             throw Error(`Argument for setLang is ${typeof langKey}`);
@@ -146,14 +159,13 @@ class Lieu {
         this.onSetLang(oldLang, this.currentLanguage);
     }
 
+    // Find all data-attributes by attributeName field in DOM, and localize them
     localizeDomElems() {
         const localeElems = Array.from(
             document.querySelectorAll(`[${this.attributeName}]`)
         );
 
         const locales = this.currentLanguage.locales;
-
-        // const localeKeys = Object.keys(this.currentLanguage.locales);
 
         localeElems.forEach((elem) => {
             const locale = elem.dataset.localize;
@@ -170,9 +182,12 @@ class Lieu {
         });
     }
 
+    /** Return value from currentLanguage.locales or null
+    @param localeKey<String>
+    */
     localize(localeKey) {
         const locales = this.currentLanguage.locales;
-        let locale;
+        let locale = null;
 
         if (locales[locale]) {
             locale = locales[locale];
@@ -183,14 +198,22 @@ class Lieu {
         return locale;
     }
 
+    /** Return value from currentLanguage.locales or null
+    @param localeKey<String>
+    */
     __(localeKey) {
         return this.localize(localeKey);
     }
 
+    // Return browser language
     getBrowserLang() {
         return navigator?.language;
     }
 
+    /** Return language object from languages class field by its' key
+    * or current langauge if @param langKey is not set
+    @param langKey<String> not required
+    */
     getLang(langKey) {
         let language;
 
@@ -209,6 +232,7 @@ class Lieu {
         }
 
         this.onGetLang();
+
         return language;
     }
 }
