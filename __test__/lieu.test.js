@@ -4,12 +4,12 @@
  */
 import testDom from './test-dom';
 import Lieu from '../dist/lieu.es';
-import { STORAGE_KEY } from '../src/core/const';
+import { STORAGE_KEY, ATTRIBUTE_NAME } from '../src/core/const';
 
 let initialData;
 let lieu;
 
-beforeAll(() => {
+beforeEach(() => {
     document.body.innerHTML = testDom();
 
     initialData = {
@@ -36,28 +36,38 @@ beforeAll(() => {
 });
 
 test('Initialization with initial language', () => {
-    const elemToLocalize = document.getElementById('locale');
-
-    expect(elemToLocalize.textContent).toBe(
-        initialData.languages[initialData.initialLanguage].locales.Hello
+    // Take all elems with attribute from DOM
+    const elemsToLocalize = Array.from(
+        document.querySelectorAll(`[${ATTRIBUTE_NAME}]`)
     );
+
+    // Check for each elem to have correct text content after translation
+    elemsToLocalize.forEach((elem) => {
+        const elemAttrValue = elem.getAttribute(ATTRIBUTE_NAME);
+
+        expect(elem.textContent).toBe(
+            initialData.languages[initialData.initialLanguage].locales[elemAttrValue]
+        );
+    })
+
 });
 
 test('Initialization without initial language', () => {
-    const savedInitialLanguage = initialData.initialLanguage;
-
     initialData.initialLanguage = undefined;
     lieu = new Lieu(initialData);
 
     expect(typeof lieu.getLang()).toBe('object');
-
-    // Assign saved initial language after this test
-    initialData.initialLanguage = savedInitialLanguage;
 });
 
 test('Get current language', () => {
     expect(lieu.getLang()).toBe(
         initialData.languages[initialData.initialLanguage]
+    );
+});
+
+test('Get initial language', () => {
+    expect(lieu.getInitialLang()).toBe(
+        initialData.initialLanguage
     );
 });
 
@@ -74,11 +84,19 @@ test('Initialization with custom data attribute', () => {
 
     lieu = new Lieu(initialData);
 
-    const elemToLocalize = document.getElementById('locale');
-
-    expect(elemToLocalize.textContent).toBe(
-        initialData.languages[initialData.initialLanguage].locales.Hello
+    // Take all elems with attribute from DOM
+    const elemsToLocalize = Array.from(
+        document.querySelectorAll(`[${ATTRIBUTE_NAME}]`)
     );
+
+    // Check for each elem to have correct text content after translation
+    elemsToLocalize.forEach((elem) => {
+        const elemAttrValue = elem.getAttribute(ATTRIBUTE_NAME);
+
+        expect(elem.textContent).toBe(
+            initialData.languages[initialData.initialLanguage].locales[elemAttrValue]
+        );
+    })
 });
 
 test('String localize method', () => {
@@ -97,14 +115,26 @@ test('String localize method', () => {
     );
 });
 
-test('Dom element after setLang method', () => {
-    lieu.setLang('en');
+test('Text content of DOM elements after setLang method', () => {
+    const initialLang = initialData.initialLanguage;
+    const langsKeys = Object.keys(initialData.languages);
+    const selectedLang = langsKeys.find((key) => key !== initialLang);
 
-    const elemToLocalize = document.getElementById('locale');
+    lieu.setLang(selectedLang);
 
-    expect(elemToLocalize.textContent).toBe(
-        initialData.languages.en.locales.Hello
+    // Take all elems with attribute from DOM
+    const elemsToLocalize = Array.from(
+        document.querySelectorAll(`[${ATTRIBUTE_NAME}]`)
     );
+
+    // Check for each elem to have correct text content after translation
+    elemsToLocalize.forEach((elem) => {
+        const elemAttrValue = elem.getAttribute(ATTRIBUTE_NAME);
+
+        expect(elem.textContent).toBe(
+            initialData.languages[selectedLang].locales[elemAttrValue]
+        );
+    })
 });
 
 test('Current language after setLang method', () => {

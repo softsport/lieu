@@ -4,18 +4,23 @@
  * Licensed under MIT (https://github.com/LeadrateMSK/lieu/blob/master/LICENSE)
  */
 class Helpers {
-  // Checks if passed data is object or not
-  static isObject(data) {
-    return typeof data === 'object';
+  // Checks if passed object is object or not
+  static isObject(obj) {
+    return typeof obj === 'object';
+  } // Checks if passed object is funcion or not
+
+
+  static isFunction(obj) {
+    return typeof obj === 'function';
   }
   /** Returns parsed from JSON object or null
-  @param data<JSON>
+  @param obj<JSON>
   */
 
 
-  static fromJson(data) {
+  static fromJson(obj) {
     try {
-      const languagesFromJson = JSON.parse(data);
+      const languagesFromJson = JSON.parse(obj);
 
       if (this.isObject(languagesFromJson)) {
         return languagesFromJson;
@@ -30,63 +35,69 @@ class Helpers {
 }
 
 const STORAGE_KEY = 'language';
+const ATTRIBUTE_NAME = 'data-lieu';
 
 /**
  * @param initialData<Object>
  */
 
 class Lieu {
-  initialData;
-  languages = null;
-  initialLanguage = null;
-  currentLanguage = null;
-  attributeName = 'data-localize';
-  onSetLang = (newLang, oldLang) => {};
-  onGetLang = () => {};
+  #initialData = null; // object
+
+  #languages = null; // object
+
+  #currentLanguage = null; // object
+
+  #initialLanguage = null; // string
+
+  #attributeName = ATTRIBUTE_NAME; // string
+
+  #onSetLang = (newLang, oldLang) => {};
+  #onGetLang = () => {};
 
   constructor(initialData) {
-    this.initialData = initialData;
-    this.initLieu();
+    this.#initialData = initialData;
+    this.#initLieu();
   } // Class initialization
 
 
-  initLieu() {
-    this.initLanguages();
-    this.setHooks();
-    this.setAttributeName();
-    this.setInitialLanguage();
+  #initLieu() {
+    this.#initLanguages();
+    this.#setHooks();
+    this.#setAttributeName();
+    this.#setInitialLanguage();
   } // Set class field languages if languages from inittial data is object or json
 
 
-  initLanguages() {
-    let initialLanguages = this.initialData?.languages;
+  #initLanguages() {
+    let initialLanguages = this.#initialData?.languages;
 
     if (Helpers.isObject(initialLanguages)) {
-      this.setLanguages(initialLanguages);
+      this.#setLanguages(initialLanguages);
     } else {
       initialLanguages = Helpers.fromJson(initialLanguages); // return null if lang not in json
 
-      this.setLanguages(initialLanguages);
+      this.#setLanguages(initialLanguages);
     }
   } // Set hooks if they exist in inital data
 
 
-  setHooks() {
-    if (typeof this.initialData.onSetLang === 'function') {
-      this.onSetLang = this.initialData.onSetLang;
+  #setHooks() {
+    if (Helpers.isFunction(this.#initialData.onSetLang)) {
+      this.#onSetLang = this.#initialData.onSetLang;
     }
 
-    if (typeof this.initialData.onGetLang === 'function') {
-      this.onGetLang = this.initialData.onGetLang;
+    if (Helpers.isFunction(this.#initialData.onGetLang)) {
+      this.#onGetLang = this.#initialData.onGetLang;
     }
   } // Set custom data attribute
 
 
-  setAttributeName() {
-    const attr = this.initialData?.attributeName;
+  #setAttributeName() {
+    const attr = this.#initialData?.attributeName;
 
     if (attr) {
-      this.attributeName = attr;
+      this.#attributeName = attr;
     }
   }
   /** Set languages from initial data in languages class field
@@ -94,33 +105,33 @@ class Lieu {
   */
 
 
-  setLanguages(langs) {
-    this.languages = langs;
+  #setLanguages(langs) {
+    this.#languages = langs;
   } // Set initial language from languages
 
 
-  setInitialLanguage() {
-    const langKeys = Object.keys(this.languages);
-    const initialLangName = this.initialData.initialLanguage;
+  #setInitialLanguage() {
+    const langKeys = Object.keys(this.#languages);
+    const initialLangName = this.#initialData.initialLanguage;
 
     if (initialLangName) {
       for (let i = 0; i < langKeys.length; i++) {
         if (initialLangName.includes(langKeys[i])) {
-          this.initialLanguage = this.languages[langKeys[i]];
+          this.#initialLanguage = initialLangName;
           this.setLang(initialLangName);
           break;
         }
       }
     } else {
-      this.setInitialLanguageAuto();
+      this.#setInitialLanguageAuto();
     }
   } // Set initial language if initial language is not set in initial data
 
 
-  setInitialLanguageAuto() {
+  #setInitialLanguageAuto() {
     // Todo improve
     const storageLangKey = window.localStorage?.getItem(STORAGE_KEY);
-    const langKeys = Object.keys(this.languages);
+    const langKeys = Object.keys(this.#languages);
     let langKey = langKeys[0];
 
     if (storageLangKey) {
@@ -132,7 +143,7 @@ class Lieu {
       }
     }
 
-    this.initialLanguage = this.languages[langKey];
+    this.#initialLanguage = langKey;
     this.setLang(langKey);
   }
   /** Set new lang by string key from languages class field
@@ -141,21 +152,21 @@ class Lieu {
 
 
   setLang(langKey) {
-    const oldLang = this.currentLanguage;
-    this.currentLanguage = this.languages[langKey];
+    const oldLang = this.#currentLanguage;
+    this.#currentLanguage = this.#languages[langKey];
     window.localStorage?.setItem(STORAGE_KEY, langKey);
-    this.localizeDomElems();
-    this.onSetLang(oldLang, this.currentLanguage);
+    this.#localizeDomElems();
+    this.#onSetLang(oldLang, this.#currentLanguage);
   } // Find all data-attributes by attributeName field in DOM, and localize them
 
 
-  localizeDomElems() {
-    const localeElems = Array.from(document.querySelectorAll(`[${this.attributeName}]`));
+  #localizeDomElems() {
+    const localeElems = Array.from(document.querySelectorAll(`[${this.#attributeName}]`));
     const {
       locales
-    } = this.currentLanguage;
+    } = this.#currentLanguage;
     localeElems.forEach(elem => {
-      const locale = elem.getAttribute(this.attributeName);
+      const locale = elem.getAttribute(this.#attributeName);
       const localeText = locales[locale];
       elem.innerHTML = localeText;
     });
@@ -168,7 +179,7 @@ class Lieu {
   localize(localeKey) {
     const {
       locales
-    } = this.currentLanguage;
+    } = this.#currentLanguage;
     return locales[localeKey];
   }
   /** Return value from currentLanguage.locales or null
@@ -191,18 +202,23 @@ class Lieu {
 
 
   getLang(langKey) {
-    this.onGetLang();
+    this.#onGetLang();
 
     if (langKey) {
-      return this.languages[langKey];
+      return this.#languages[langKey];
     }
 
-    return this.currentLanguage;
+    return this.#currentLanguage;
   } // Returns object of all languages
 
 
   getLangs() {
-    return this.languages;
+    return this.#languages;
+  } // Returns string of initial language
+
+
+  getInitialLang() {
+    return this.#initialLanguage;
   }
 
 }

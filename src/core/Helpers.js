@@ -1,15 +1,20 @@
 class Helpers {
-    // Checks if passed data is object or not
-    static isObject(data) {
-        return typeof data === 'object';
+    // Checks if passed object is object or not
+    static isObject(obj) {
+        return typeof obj === 'object';
+    }
+
+    // Checks if passed object is funcion or not
+    static isFunction(obj) {
+        return typeof obj === 'function';
     }
 
     /** Returns parsed from JSON object or null
-    @param data<JSON>
+    @param obj<JSON>
     */
-    static fromJson(data) {
+    static fromJson(obj) {
         try {
-            const languagesFromJson = JSON.parse(data);
+            const languagesFromJson = JSON.parse(obj);
 
             if (this.isObject(languagesFromJson)) {
                 return languagesFromJson;
