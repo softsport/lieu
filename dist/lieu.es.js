@@ -1,5 +1,5 @@
 /*!
- * Lieu v0.0.1 (https://github.com/LeadrateMSK/lieu#readme)
+ * Lieu v0.0.2 (https://github.com/LeadrateMSK/lieu#readme)
  * Copyright 2022 LeadrateMSK <web@leadrate.pro>
  * Licensed under MIT (https://github.com/LeadrateMSK/lieu/blob/master/LICENSE)
  */
@@ -34,7 +34,7 @@ class Helpers {
 
 }
 
-const STORAGE_KEY = 'language';
+const STORAGE_KEY = 'lieu';
 const ATTRIBUTE_NAME = 'data-lieu';
 
 /**

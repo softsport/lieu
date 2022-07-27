@@ -6,7 +6,7 @@ function testDom(customAttr) {
     return `
         <h1 ${attr}="Bye">Au revoir</h1>
         <p ${attr}="Hello">Bonjour</p>
-        <a ${attr}="Bye">Au revoir</a>
+        <a href="#" ${attr}="Bye">Au revoir</a>
         <span ${attr}="Hello"></span>
     `;
 }
