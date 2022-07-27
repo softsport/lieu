@@ -46,10 +46,11 @@ test('Initialization with initial language', () => {
         const elemAttrValue = elem.getAttribute(ATTRIBUTE_NAME);
 
         expect(elem.textContent).toBe(
-            initialData.languages[initialData.initialLanguage].locales[elemAttrValue]
+            initialData.languages[initialData.initialLanguage].locales[
+                elemAttrValue
+            ]
         );
-    })
-
+    });
 });
 
 test('Initialization without initial language', () => {
@@ -66,9 +67,7 @@ test('Get current language', () => {
 });
 
 test('Get initial language', () => {
-    expect(lieu.getInitialLang()).toBe(
-        initialData.initialLanguage
-    );
+    expect(lieu.getInitialLang()).toBe(initialData.initialLanguage);
 });
 
 test('Get language by its key', () => {
@@ -94,9 +93,11 @@ test('Initialization with custom data attribute', () => {
         const elemAttrValue = elem.getAttribute(ATTRIBUTE_NAME);
 
         expect(elem.textContent).toBe(
-            initialData.languages[initialData.initialLanguage].locales[elemAttrValue]
+            initialData.languages[initialData.initialLanguage].locales[
+                elemAttrValue
+            ]
         );
-    })
+    });
 });
 
 test('String localize method', () => {
@@ -134,7 +135,7 @@ test('Text content of DOM elements after setLang method', () => {
         expect(elem.textContent).toBe(
             initialData.languages[selectedLang].locales[elemAttrValue]
         );
-    })
+    });
 });
 
 test('Current language after setLang method', () => {
@@ -175,4 +176,28 @@ test('Current language storage save', () => {
     expect(window.localStorage.getItem(STORAGE_KEY)).toBe(
         initialData.initialLanguage
     );
+});
+
+test('Change language asynchronously', () => {
+    const initialLang = initialData.initialLanguage;
+    const langsKeys = Object.keys(initialData.languages);
+    const selectedLang = langsKeys.find((key) => key !== initialLang);
+
+    lieu.setLang(selectedLang);
+
+    setTimeout(() => {
+        // Take all elems with attribute from DOM
+        const elemsToLocalize = Array.from(
+            document.querySelectorAll(`[${ATTRIBUTE_NAME}]`)
+        );
+
+        // Check for each elem to have correct text content after translation
+        elemsToLocalize.forEach((elem) => {
+            const elemAttrValue = elem.getAttribute(ATTRIBUTE_NAME);
+
+            expect(elem.textContent).toBe(
+                initialData.languages[selectedLang].locales[elemAttrValue]
+            );
+        });
+    }, 1000);
 });

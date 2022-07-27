@@ -1,5 +1,5 @@
 /*!
- * Lieu v0.0.2 (https://github.com/LeadrateMSK/lieu#readme)
+ * Lieu v0.0.3 (https://github.com/LeadrateMSK/lieu#readme)
  * Copyright 2022 LeadrateMSK <web@leadrate.pro>
  * Licensed under MIT (https://github.com/LeadrateMSK/lieu/blob/master/LICENSE)
  */
@@ -48,6 +48,10 @@
      */
 
     class Lieu {
+      #isDebug = false; // boolean
+
+      #isPluginInitialized = false; // boolean
+
       #initialData = null; // object
 
       #languages = null; // object
@@ -63,6 +67,7 @@
 
       constructor(initialData) {
         this.#initialData = initialData;
+        this.#isDebug = initialData.isDebug;
         this.#initLieu();
       } // Class initialization
 
@@ -117,40 +122,31 @@
 
 
       #setInitialLanguage() {
-        const langKeys = Object.keys(this.#languages);
-        const initialLangName = this.#initialData.initialLanguage;
-
-        if (initialLangName) {
-          for (let i = 0; i < langKeys.length; i++) {
-            if (initialLangName.includes(langKeys[i])) {
-              this.#initialLanguage = initialLangName;
-              this.setLang(initialLangName);
-              break;
-            }
-          }
-        } else {
-          this.#setInitialLanguageAuto();
-        }
-      } // Set initial language if initial language is not set in initial data
-
-
-      #setInitialLanguageAuto() {
-        // Todo improve
         const storageLangKey = window.localStorage?.getItem(STORAGE_KEY);
         const langKeys = Object.keys(this.#languages);
-        let langKey = langKeys[0];
+        const initialLangName = this.#initialData.initialLanguage;
+        let defaultLangKey;
 
         if (storageLangKey) {
-          for (let i = 0; i < langKeys.length; i++) {
-            if (langKeys[i] === storageLangKey) {
-              langKey = storageLangKey;
-              break;
-            }
+          const isExistsInLangs = langKeys.find(key => key === storageLangKey); // If it exists in languages set as initial
+
+          if (isExistsInLangs) {
+            defaultLangKey = this.#languages[storageLangKey];
           }
         }
 
-        this.#initialLanguage = langKey;
-        this.setLang(langKey);
+        if (initialLangName && !defaultLangKey) {
+          const isExistsInLangs = langKeys.find(key => key === initialLangName); // If it exists in languages set as initial
+
+          if (isExistsInLangs) {
+            defaultLangKey = initialLangName;
+          }
+        } else {
+          defaultLangKey = langKeys[0];
+        }
+
+        this.#initialLanguage = defaultLangKey;
+        this.setLang(defaultLangKey);
       }
       /** Set new lang by string key from languages class field
       @param langKey<String>
@@ -158,11 +154,26 @@
 
 
       setLang(langKey) {
-        const oldLang = this.#currentLanguage;
-        this.#currentLanguage = this.#languages[langKey];
+        const newLanguage = this.#languages[langKey];
+        const oldLanguage = this.#currentLanguage;
+
+        if (!newLanguage) {
+          if (this.#isDebug) {
+            console.error(`Lieu | Language key "${langKey}" not found in languages!`);
+          }
+
+          return;
+        }
+
+        this.#currentLanguage = newLanguage;
         window.localStorage?.setItem(STORAGE_KEY, langKey);
         this.#localizeDomElems();
-        this.#onSetLang(oldLang, this.#currentLanguage);
+
+        if (this.#isPluginInitialized) {
+          this.#onSetLang(oldLanguage, newLanguage);
+        } else {
+          this.#isPluginInitialized = true;
+        }
       } // Find all data-attributes by attributeName field in DOM, and localize them
 
 
@@ -173,7 +184,16 @@
         } = this.#currentLanguage;
         localeElems.forEach(elem => {
           const locale = elem.getAttribute(this.#attributeName);
-          const localeText = locales[locale];
+          let localeText = locales[locale]; // If not found set attr value as text
+
+          if (!localeText) {
+            localeText = locale;
+
+            if (this.#isDebug) {
+              console.warn(`Lieu | ${this.#attributeName} attribute value "${locale}" not found in current language!`);
+            }
+          }
+
           elem.innerHTML = localeText;
         });
       }
@@ -186,7 +206,17 @@
         const {
           locales
         } = this.#currentLanguage;
-        return locales[localeKey];
+        let locale = locales[localeKey];
+
+        if (!locale) {
+          locale = localeKey;
+
+          if (this.#isDebug) {
+            console.error(`Lieu | Locale key "${localeKey}" not found in current language!`);
+          }
+        }
+
+        return locale;
       }
       /** Return value from currentLanguage.locales or null
       @param localeKey<String>

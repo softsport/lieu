@@ -1,6 +1,6 @@
 {
   "name": "lieu",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Javascript plugin for localize string.",
   "main": "dist/lieu.cjs",
   "module": "dist/lieu.es.js",
