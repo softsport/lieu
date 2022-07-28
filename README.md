@@ -108,3 +108,5 @@ lieu.getLangs(); // get all languages
 | onSetLang  | (newLang, oldLang)  | executed when using the `setLang()` method  |
 | onGetLang  | () |  executed when using the `getLang()` method |
 
+## Contributing
+The author will be grateful to all developers for any suggestions to improve the plugin. Fork and submit pull requests. Thank you!
