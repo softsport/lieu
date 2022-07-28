@@ -10,6 +10,8 @@ let initialData;
 let lieu;
 
 beforeEach(() => {
+    localStorage.removeItem(STORAGE_KEY);
+
     document.body.innerHTML = testDom();
 
     initialData = {
@@ -64,10 +66,6 @@ test('Get current language', () => {
     expect(lieu.getLang()).toBe(
         initialData.languages[initialData.initialLanguage]
     );
-});
-
-test('Get initial language', () => {
-    expect(lieu.getInitialLang()).toBe(initialData.initialLanguage);
 });
 
 test('Get language by its key', () => {
@@ -164,18 +162,13 @@ test('Hook onGetLang', () => {
     expect(hook).toHaveBeenCalled();
 });
 
-test('Get browserLang method', () => {
-    expect(typeof lieu.getBrowserLang()).toBe('string');
-});
-
 test('Get all languages', () => {
     expect(lieu.getLangs()).toBe(initialData.languages);
 });
 
 test('Current language storage save', () => {
-    expect(window.localStorage.getItem(STORAGE_KEY)).toBe(
-        initialData.initialLanguage
-    );
+    lieu.setLang('en');
+    expect(localStorage.getItem(STORAGE_KEY)).toBe('en');
 });
 
 test('Change language asynchronously', () => {
