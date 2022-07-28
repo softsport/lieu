@@ -1,5 +1,5 @@
 /*!
- * Lieu v0.1.0 (https://github.com/LeadrateMSK/lieu#readme)
+ * Lieu v1.0.0 (https://github.com/LeadrateMSK/lieu#readme)
  * Copyright 2022 LeadrateMSK <web@leadrate.pro>
  * Licensed under MIT (https://github.com/LeadrateMSK/lieu/blob/master/LICENSE)
  */
@@ -9,26 +9,21 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.lieu = factory());
 })(this, (function () { 'use strict';
 
-    class Helpers {
+    const helpers = {
       // Checks if passed object is object or not
-      static isObject(obj) {
+      isObject: obj => {
         return typeof obj === 'object';
-      } // Checks if passed object is funcion or not
-
-
-      static isFunction(obj) {
-        return typeof obj === 'function';
-      }
-      /** Returns parsed from JSON object or null
-      @param obj<JSON>
-      */
-
-
-      static fromJson(obj) {
+      },
+      // Checks if passed object is funcion or not
+      isFunction: func => {
+        return typeof func === 'function';
+      },
+      // Returns parsed from JSON object or null
+      fromJson: obj => {
         try {
           const languagesFromJson = JSON.parse(obj);
 
-          if (this.isObject(languagesFromJson)) {
+          if (typeof languagesFromJson === 'object') {
             return languagesFromJson;
           } else {
             return null;
@@ -36,9 +31,16 @@
         } catch {
           return null;
         }
+      },
+      // Return browser language
+      getBrowserLang: () => {
+        return navigator.language.slice(0, 2);
+      },
+      // Check key existing in object
+      hasKey: (key, obj) => {
+        return Object.keys(obj).indexOf(key) !== -1;
       }
-
-    }
+    };
 
     const STORAGE_KEY = 'lieu';
     const ATTRIBUTE_NAME = 'data-lieu';
@@ -50,17 +52,13 @@
     class Lieu {
       #isDebug = false; // boolean
 
-      #isPluginInitialized = false; // boolean
-
       #initialData = null; // object
 
       #languages = null; // object
 
       #currentLanguage = null; // object
 
-      #initialLanguage = null; // string
-
-      #attributeName = ATTRIBUTE_NAME; // string
+      #attributeName; // string
 
       #onSetLang = (newLang, oldLang) => {};
       #onGetLang = () => {};
@@ -68,162 +66,91 @@
       constructor(initialData) {
         this.#initialData = initialData;
         this.#isDebug = initialData.isDebug;
-        this.#initLieu();
-      } // Class initialization
+        this.#init();
+      }
 
-
-      #initLieu() {
+      #init() {
         this.#initLanguages();
-        this.#setHooks();
         this.#setAttributeName();
         this.#setInitialLanguage();
-      } // Set class field languages if languages from inittial data is object or json
+        this.#setHooks();
+      } // Set class field languages if languages from initial data is object or json
 
 
       #initLanguages() {
-        let initialLanguages = this.#initialData?.languages;
+        let initialLanguages = this.#initialData.languages;
 
-        if (Helpers.isObject(initialLanguages)) {
-          this.#setLanguages(initialLanguages);
-        } else {
-          initialLanguages = Helpers.fromJson(initialLanguages); // return null if lang not in json
-
-          this.#setLanguages(initialLanguages);
+        if (!helpers.isObject(initialLanguages)) {
+          initialLanguages = helpers.fromJson(initialLanguages);
         }
-      } // Set hooks if they exist in inital data
+
+        this.#languages = initialLanguages;
+      } // Set hooks if they exist in initial data
 
 
       #setHooks() {
-        if (Helpers.isFunction(this.#initialData.onSetLang)) {
+        if (helpers.isFunction(this.#initialData.onSetLang)) {
           this.#onSetLang = this.#initialData.onSetLang;
         }
 
-        if (Helpers.isFunction(this.#initialData.onGetLang)) {
+        if (helpers.isFunction(this.#initialData.onGetLang)) {
           this.#onGetLang = this.#initialData.onGetLang;
         }
       } // Set custom data attribute
 
 
       #setAttributeName() {
-        const attr = this.#initialData?.attributeName;
-
-        if (attr) {
-          this.#attributeName = attr;
-        }
-      }
-      /** Set languages from initial data in languages class field
-      @param langs<Object>
-      */
-
-
-      #setLanguages(langs) {
-        this.#languages = langs;
+        this.#attributeName = this.#initialData.attributeName ?? ATTRIBUTE_NAME;
       } // Set initial language from languages
 
 
       #setInitialLanguage() {
-        const storageLangKey = window.localStorage?.getItem(STORAGE_KEY);
-        const initialLangName = this.#initialData.initialLanguage;
-        let defaultLangKey; // If storage lang exists in languages object set as default
+        const initialLang = this.#initialData.initialLanguage;
+        const userKeyLang = localStorage.getItem(STORAGE_KEY) ?? // from storage
+        this.#initialData.initialLanguage ?? // from options
+        helpers.getBrowserLang(); // from userAgent
 
-        if (storageLangKey) {
-          const isExistsInLangs = this.#isKeyExistsInLangs(storageLangKey); // If it exists in languages set as initial
-
-          if (isExistsInLangs) {
-            defaultLangKey = this.#languages[storageLangKey];
-          }
-        } // If storageLangKey not used and browser language exists in languages object sets it as default
-
-
-        if (!defaultLangKey) {
-          const browserLang = this.getBrowserLang().slice(0, 2);
-
-          if (browserLang) {
-            const isExistsInLangs = this.#isKeyExistsInLangs(browserLang);
-
-            if (isExistsInLangs) {
-              defaultLangKey = this.#languages[browserLang];
-            }
-          }
-        } // If storageLangKey and browser lang not used, set initialLangName as default
-
-
-        if (initialLangName && !defaultLangKey) {
-          const isExistsInLangs = this.#isKeyExistsInLangs(initialLangName); // If it exists in languages set as initial
-
-          if (isExistsInLangs) {
-            defaultLangKey = initialLangName;
-          }
+        if (helpers.hasKey(userKeyLang, this.#languages)) {
+          this.setLang(userKeyLang);
+        } else if (helpers.hasKey(initialLang, this.#languages)) {
+          this.setLang(initialLang);
         } else {
-          // If storageLangKey, browser lang and initialLangName not used, set first language key as default
-          defaultLangKey = Object.keys(this.#languages)[0];
+          this.setLang(Object.keys(this.#languages)[0]);
         }
-
-        this.#initialLanguage = defaultLangKey;
-        this.setLang(defaultLangKey);
       }
-      /** Checks is key exists in language object
-      @param langKey<String>
-      returns true if key exists
-      */
-
-
-      #isKeyExistsInLangs(langKey) {
-        const langKeys = Object.keys(this.#languages);
-        return langKeys.find(key => key === langKey);
-      }
-      /** Set new lang by string key from languages class field
-      @param langKey<String>
-      */
+      /*
+       * Set new lang by string key from languages class field
+       * @param langKey<String>
+       */
 
 
       setLang(langKey) {
         const newLanguage = this.#languages[langKey];
         const oldLanguage = this.#currentLanguage;
 
-        if (!newLanguage) {
-          if (this.#isDebug) {
-            console.error(`Lieu | Language key "${langKey}" not found in languages!`);
-          }
-
+        if (!helpers.hasKey(langKey, this.#languages)) {
+          console.error(`Lieu | Language key "${langKey}" not found in languages!`);
           return;
         }
 
         this.#currentLanguage = newLanguage;
-        window.localStorage?.setItem(STORAGE_KEY, langKey);
+        localStorage.setItem(STORAGE_KEY, langKey);
         this.#localizeDomElems();
-
-        if (this.#isPluginInitialized) {
-          this.#onSetLang(oldLanguage, newLanguage);
-        } else {
-          this.#isPluginInitialized = true;
-        }
+        this.#onSetLang(oldLanguage, newLanguage);
       } // Find all data-attributes by attributeName field in DOM, and localize them
 
 
       #localizeDomElems() {
-        const localeElems = Array.from(document.querySelectorAll(`[${this.#attributeName}]`));
-        const {
-          locales
-        } = this.#currentLanguage;
-        localeElems.forEach(elem => {
-          const locale = elem.getAttribute(this.#attributeName);
-          let localeText = locales[locale]; // If not found set attr value as text
-
-          if (!localeText) {
-            localeText = locale;
-
-            if (this.#isDebug) {
-              console.warn(`Lieu | ${this.#attributeName} attribute value "${locale}" not found in current language!`);
-            }
-          }
-
-          elem.innerHTML = localeText;
+        const $locales = Array.from(document.querySelectorAll(`[${this.#attributeName}]`));
+        $locales.forEach($str => {
+          const locale = $str.getAttribute(this.#attributeName);
+          $str.innerHTML = this.localize(locale);
         });
       }
-      /** Return value from currentLanguage.locales or null
-      @param localeKey<String>
-      */
+      /**
+       * Return value from currentLanguage.locales or null
+       * @param localeKey<String>
+       */
 
 
       localize(localeKey) {
@@ -236,24 +163,11 @@
           locale = localeKey;
 
           if (this.#isDebug) {
-            console.error(`Lieu | Locale key "${localeKey}" not found in current language!`);
+            console.warn(`Lieu | Locale key "${localeKey}" not found in current language!`);
           }
         }
 
         return locale;
-      }
-      /** Return value from currentLanguage.locales or null
-      @param localeKey<String>
-      */
-
-
-      __(localeKey) {
-        return this.localize(localeKey);
-      } // Return browser language
-
-
-      getBrowserLang() {
-        return navigator?.language;
       }
       /** Return language object from languages class field by its' key
       * or current langauge if @param langKey is not set
@@ -264,21 +178,21 @@
       getLang(langKey) {
         this.#onGetLang();
 
-        if (langKey) {
-          return this.#languages[langKey];
+        if (!langKey) {
+          return this.#currentLanguage;
         }
 
-        return this.#currentLanguage;
+        if (!helpers.hasKey(langKey, this.#languages)) {
+          console.error(`Lieu | Language key "${langKey}" not found in languages!`);
+          return;
+        }
+
+        return this.#languages[langKey];
       } // Returns object of all languages
 
 
       getLangs() {
         return this.#languages;
-      } // Returns string of initial language
-
-
-      getInitialLang() {
-        return this.#initialLanguage;
       }
 
     }
