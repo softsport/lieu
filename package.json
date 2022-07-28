@@ -10,7 +10,7 @@
   "scripts": {
     "test": "jest",
     "cover": "jest --coverage",
-    "lint": "eslint src/lieu.es.js src/lieu.js",
+    "lint": "eslint src/lieu.es.js src/lieu.umd.js",
     "build": "rollup --config --sourcemap"
   },
   "repository": {
