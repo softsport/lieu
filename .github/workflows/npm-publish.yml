@@ -16,9 +16,6 @@ jobs:
       - run: npm run build
       - run: npm test
 
-  update: update CHANGELOG
-    uses: LeadrateMSK/.github/.github/workflows/update-changelog.yml@master
-
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
