@@ -117,30 +117,54 @@ class Lieu {
 
   #setInitialLanguage() {
     const storageLangKey = window.localStorage?.getItem(STORAGE_KEY);
-    const langKeys = Object.keys(this.#languages);
     const initialLangName = this.#initialData.initialLanguage;
-    let defaultLangKey;
+    let defaultLangKey; // If storage lang exists in languages object set as default
 
     if (storageLangKey) {
-      const isExistsInLangs = langKeys.find(key => key === storageLangKey); // If it exists in languages set as initial
+      const isExistsInLangs = this.#isKeyExistsInLangs(storageLangKey); // If it exists in languages set as initial
 
       if (isExistsInLangs) {
         defaultLangKey = this.#languages[storageLangKey];
       }
-    }
+    } // If storageLangKey not used and browser language exists in languages object sets it as default
+
+
+    if (!defaultLangKey) {
+      const browserLang = this.getBrowserLang().slice(0, 2);
+
+      if (browserLang) {
+        const isExistsInLangs = this.#isKeyExistsInLangs(browserLang);
+
+        if (isExistsInLangs) {
+          defaultLangKey = this.#languages[browserLang];
+        }
+      }
+    } // If storageLangKey and browser lang not used, set initialLangName as default
+
 
     if (initialLangName && !defaultLangKey) {
-      const isExistsInLangs = langKeys.find(key => key === initialLangName); // If it exists in languages set as initial
+      const isExistsInLangs = this.#isKeyExistsInLangs(initialLangName); // If it exists in languages set as initial
 
       if (isExistsInLangs) {
         defaultLangKey = initialLangName;
       }
     } else {
-      defaultLangKey = langKeys[0];
+      // If storageLangKey, browser lang and initialLangName not used, set first language key as default
+      defaultLangKey = Object.keys(this.#languages)[0];
     }
 
     this.#initialLanguage = defaultLangKey;
     this.setLang(defaultLangKey);
+  }
+  /** Checks is key exists in language object
+  @param langKey<String>
+  returns true if key exists
+  */
+
+
+  #isKeyExistsInLangs(langKey) {
+    const langKeys = Object.keys(this.#languages);
+    return langKeys.find(key => key === langKey);
   }
   /** Set new lang by string key from languages class field
   @param langKey<String>
