@@ -17,8 +17,7 @@ function getHeader() {
  */`;
 }
 
-const pathCore = path.join(__dirname, 'src/lieu.es.js');
-const pathCoreUmd = path.join(__dirname, 'src/lieu.umd.js');
+const pathCore = path.join(__dirname, 'src/lieu.js');
 
 const bundles = [
     {
@@ -38,7 +37,7 @@ const bundles = [
         },
     },
     {
-        input: pathCoreUmd,
+        input: pathCore,
         output: {
             banner: getHeader(),
             name: 'lieu',
@@ -47,7 +46,7 @@ const bundles = [
         },
     },
     {
-        input: pathCoreUmd,
+        input: pathCore,
         output: {
             banner: getHeader(),
             name: 'lieu',

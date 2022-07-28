@@ -1,5 +1,5 @@
 /*!
- * Lieu v0.0.3 (https://github.com/LeadrateMSK/lieu#readme)
+ * Lieu v0.1.0 (https://github.com/LeadrateMSK/lieu#readme)
  * Copyright 2022 LeadrateMSK <web@leadrate.pro>
  * Licensed under MIT (https://github.com/LeadrateMSK/lieu/blob/master/LICENSE)
  */
