@@ -2,7 +2,7 @@ name: npm publish & update CHANGELOG
 
 on:
   release:
-    types: [created]
+    types: [released]
 
 jobs:
   build:
