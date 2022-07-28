@@ -1,5 +1,5 @@
 import helpers from './helpers';
-import { STORAGE_KEY, ATTRIBUTE_NAME } from './const';
+import { STORAGE_KEY, ATTRIBUTE_NAME, DEFAULT_INTERPOLATION_REGEX } from './const';
 
 /**
  * @param initialData<Object>
@@ -10,6 +10,7 @@ export default class Lieu {
     #languages = null; // object
     #currentLanguage = null; // object
     #attributeName; // string
+    #defaultRegex = DEFAULT_INTERPOLATION_REGEX; // regex
 
     #onSetLang = (newLang, oldLang) => {};
     #onGetLang = () => {};
@@ -113,8 +114,9 @@ export default class Lieu {
     /**
      * Return value from currentLanguage.locales or null
      * @param localeKey<String>
+     * @param options<Object>
      */
-    localize(localeKey) {
+    localize(localeKey, options) {
         const { locales } = this.#currentLanguage;
         let locale = locales[localeKey];
 
@@ -126,6 +128,13 @@ export default class Lieu {
                     `Lieu | Locale key "${localeKey}" not found in current language!`
                 );
             }
+        }
+
+        if (options) {
+            locale = locale.replace(
+                this.#defaultRegex,
+                (match, key) => options[key] || match
+            );
         }
 
         return locale;
