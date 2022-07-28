@@ -26,7 +26,7 @@ const lieu = new Lieu({/* ... */});
 
 ### UMD (+ jsDelivr)
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lieu@0.1.0/dist/lieu.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lieu@1.0.0/dist/lieu.min.js"></script>
 ```
 
 ## Usage
@@ -74,7 +74,6 @@ const lieu = new Lieu({/* ... */});
 
 // localize strings
 lieu.localize('Hello'); // "Merhaba!" (if Turkish is selected)
-lieu.__('Hello'); // short for localize() method
 
 // other methods
 lieu.setLang('tr'); // set new language
@@ -87,7 +86,7 @@ lieu.getLangs(); // get all languages
 <span data-lieu="Hello"></span>
 <span data-lieu="Bye"></span>
 
-<script src="https://cdn.jsdelivr.net/npm/lieu@0.1.0/dist/lieu.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lieu@1.0.0/dist/lieu.min.js"></script>
 
 <script>
     const lieu = new Lieu({ /* ... */ });
