@@ -2,7 +2,7 @@ name: npm publish & update CHANGELOG
 
 on:
   release:
-    types: [created]
+    types: [released]
 
 jobs:
   build:
@@ -15,9 +15,6 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm test
-
-  update: update CHANGELOG
-    uses: LeadrateMSK/.github/.github/workflows/update-changelog.yml@master
 
   publish-npm:
     needs: build
