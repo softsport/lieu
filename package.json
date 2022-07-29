@@ -1,6 +1,6 @@
 {
   "name": "lieu",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Javascript plugin for localize string.",
   "main": "dist/lieu.cjs",
   "module": "dist/lieu.es.js",
@@ -21,7 +21,7 @@
     "plugin",
     "js",
     "localize",
-    "localiztion"
+    "localization"
   ],
   "author": "LeadrateMSK <web@leadrate.pro>",
   "license": "MIT",
