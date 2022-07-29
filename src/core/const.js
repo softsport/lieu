@@ -1,5 +1,4 @@
 const STORAGE_KEY = 'lieu';
 const ATTRIBUTE_NAME = 'data-lieu';
-const DEFAULT_INTERPOLATION_REGEX = /%\{(.*?)\}/g;
 
-export { STORAGE_KEY, ATTRIBUTE_NAME, DEFAULT_INTERPOLATION_REGEX };
+export { STORAGE_KEY, ATTRIBUTE_NAME };

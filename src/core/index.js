@@ -1,5 +1,5 @@
 import helpers from './helpers';
-import { STORAGE_KEY, ATTRIBUTE_NAME, DEFAULT_INTERPOLATION_REGEX } from './const';
+import { STORAGE_KEY, ATTRIBUTE_NAME } from './const';
 
 /**
  * @param initialData<Object>
@@ -10,7 +10,6 @@ export default class Lieu {
     #languages = null; // object
     #currentLanguage = null; // object
     #attributeName; // string
-    #defaultRegex = DEFAULT_INTERPOLATION_REGEX; // regex
 
     #onSetLang = (newLang, oldLang) => {};
     #onGetLang = () => {};
@@ -132,7 +131,7 @@ export default class Lieu {
 
         if (options) {
             locale = locale.replace(
-                this.#defaultRegex,
+                /%\{(.*?)\}/g,
                 (match, key) => options[key] || match
             );
         }
