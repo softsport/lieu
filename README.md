@@ -26,7 +26,7 @@ const lieu = new Lieu({/* ... */});
 
 ### UMD (+ jsDelivr)
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lieu@1.0.0/dist/lieu.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lieu"></script>
 ```
 
 ## Usage
@@ -45,6 +45,7 @@ const lieu = new Lieu({
             locales: {
                 'Hello': 'Hello!',
                 'Bye': 'Bye!',
+                'HelloName': 'Hello %{name} %{surname}!',
             },
         },
         tr: {
@@ -52,6 +53,7 @@ const lieu = new Lieu({
             locales: {
                 'Hello': 'Merhaba!',
                 'Bye': 'Hoşçakal!',
+                'HelloName': 'Merhaba %{name} %{surname}!',
             },
         },
         // ...{pt: {...}, zh: {...}, /* ... */}
@@ -72,8 +74,10 @@ import Lieu from 'lieu';
 
 const lieu = new Lieu({/* ... */});
 
-// localize strings
-lieu.localize('Hello'); // "Merhaba!" (if Turkish is selected)
+// translate strings
+lieu.trans('Hello'); // "Merhaba!" (if Turkish is selected)
+// replacing parameters in translation strings
+lieu.trans('HelloName', { name: 'John', surname: 'Doe' }); // "Hello John Doe!" (if English is selected)
 
 // other methods
 lieu.setLang('tr'); // set new language
@@ -86,7 +90,7 @@ lieu.getLangs(); // get all languages
 <span data-lieu="Hello"></span>
 <span data-lieu="Bye"></span>
 
-<script src="https://cdn.jsdelivr.net/npm/lieu@1.0.0/dist/lieu.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lieu"></script>
 
 <script>
     const lieu = new Lieu({ /* ... */ });

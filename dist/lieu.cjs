@@ -1,5 +1,5 @@
 /*!
- * Lieu v1.0.0 (https://github.com/LeadrateMSK/lieu#readme)
+ * Lieu v1.1.0 (https://github.com/LeadrateMSK/lieu#readme)
  * Copyright 2022 LeadrateMSK <web@leadrate.pro>
  * Licensed under MIT (https://github.com/LeadrateMSK/lieu/blob/master/LICENSE)
  */
@@ -101,15 +101,12 @@ class Lieu {
 
 
   #setInitialLanguage() {
-    const initialLang = this.#initialData.initialLanguage;
     const userKeyLang = localStorage.getItem(STORAGE_KEY) ?? // from storage
     this.#initialData.initialLanguage ?? // from options
-    helpers.getBrowserLang(); // from userAgent
+    helpers.getBrowserLang(); // from navigator
 
     if (helpers.hasKey(userKeyLang, this.#languages)) {
       this.setLang(userKeyLang);
-    } else if (helpers.hasKey(initialLang, this.#languages)) {
-      this.setLang(initialLang);
     } else {
       this.setLang(Object.keys(this.#languages)[0]);
     }
@@ -140,16 +137,17 @@ class Lieu {
     const $locales = Array.from(document.querySelectorAll(`[${this.#attributeName}]`));
     $locales.forEach($str => {
       const locale = $str.getAttribute(this.#attributeName);
-      $str.innerHTML = this.localize(locale);
+      $str.innerHTML = this.trans(locale);
     });
   }
   /**
    * Return value from currentLanguage.locales or null
    * @param localeKey<String>
+   * @param options<Object>
    */
 
 
-  localize(localeKey) {
+  trans(localeKey, options) {
     const {
       locales
     } = this.#currentLanguage;
@@ -161,6 +159,10 @@ class Lieu {
       if (this.#isDebug) {
         console.warn(`Lieu | Locale key "${localeKey}" not found in current language!`);
       }
+    }
+
+    if (options) {
+      locale = locale.replace(/%\{(.*?)\}/g, (match, key) => options[key] || match);
     }
 
     return locale;

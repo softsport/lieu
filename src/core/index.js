@@ -58,17 +58,13 @@ export default class Lieu {
 
     // Set initial language from languages
     #setInitialLanguage() {
-        const initialLang = this.#initialData.initialLanguage;
-
         const userKeyLang =
             localStorage.getItem(STORAGE_KEY) ?? // from storage
             this.#initialData.initialLanguage ?? // from options
-            helpers.getBrowserLang(); // from userAgent
+            helpers.getBrowserLang(); // from navigator
 
         if (helpers.hasKey(userKeyLang, this.#languages)) {
             this.setLang(userKeyLang);
-        } else if (helpers.hasKey(initialLang, this.#languages)) {
-            this.setLang(initialLang);
         } else {
             this.setLang(Object.keys(this.#languages)[0]);
         }
@@ -106,15 +102,16 @@ export default class Lieu {
 
         $locales.forEach(($str) => {
             const locale = $str.getAttribute(this.#attributeName);
-            $str.innerHTML = this.localize(locale);
+            $str.innerHTML = this.trans(locale);
         });
     }
 
     /**
      * Return value from currentLanguage.locales or null
      * @param localeKey<String>
+     * @param options<Object>
      */
-    localize(localeKey) {
+    trans(localeKey, options) {
         const { locales } = this.#currentLanguage;
         let locale = locales[localeKey];
 
@@ -128,6 +125,12 @@ export default class Lieu {
             }
         }
 
+        if (options) {
+            locale = locale.replace(
+                /%\{(.*?)\}/g,
+                (match, key) => options[key] || match
+            );
+        }
         return locale;
     }
 
