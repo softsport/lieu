@@ -4,6 +4,7 @@
  */
 import testDom from './test-dom';
 import Lieu from '../dist/lieu.es';
+import helpers from '../src/core/helpers';
 import { STORAGE_KEY, ATTRIBUTE_NAME } from '../src/core/const';
 
 let initialData;
@@ -39,7 +40,7 @@ beforeEach(() => {
     lieu = new Lieu(initialData);
 });
 
-test('Initialization with initial language', () => {
+test('Initialization with initial language and empty storage', () => {
     // Take all elems with attribute from DOM
     const elemsToLocalize = Array.from(
         document.querySelectorAll(`[${ATTRIBUTE_NAME}]`)
@@ -57,17 +58,35 @@ test('Initialization with initial language', () => {
     });
 });
 
-test('Initialization without initial language', () => {
-    initialData.initialLanguage = undefined;
+test('Initialization with initial language and saved language in storage', () => {
+    const initialLang = initialData.initialLanguage;
+    const langsKeys = Object.keys(initialData.languages);
+
+    // Find not initial language
+    const langToSaveInStore = langsKeys.find((key) => key !== initialLang);
+
+    localStorage.setItem(STORAGE_KEY, langToSaveInStore);
+
+    // Initialize plugin after saving language in localStorage
     lieu = new Lieu(initialData);
 
-    expect(typeof lieu.getLang()).toBe('object');
+    // Take all elems with attribute from DOM
+    const elemsToLocalize = Array.from(
+        document.querySelectorAll(`[${ATTRIBUTE_NAME}]`)
+    );
+
+    // Check for each elem to have correct text content after translation
+    elemsToLocalize.forEach((elem) => {
+        const elemAttrValue = elem.getAttribute(ATTRIBUTE_NAME);
+
+        expect(elem.textContent).toBe(
+            initialData.languages[langToSaveInStore].locales[elemAttrValue]
+        );
+    });
 });
 
 test('Get current language', () => {
-    expect(lieu.getLang()).toBe(
-        initialData.languages[initialData.initialLanguage]
-    );
+    expect(typeof lieu.getLang()).toBe('object');
 });
 
 test('Get language by its key', () => {
@@ -206,4 +225,21 @@ test('Translate string with interpolation', () => {
     expect(lieu.trans('HelloName', options)).toBe(
         `Привет ${options.name}, ${options.surname}!`
     );
+});
+
+test('Initialization with browser language (without initial language and language saved in localStorage)', () => {
+    // Remove intial lang from initial data
+    initialData.initialLanguage = undefined;
+    // Remove key from local storage
+    localStorage.removeItem(STORAGE_KEY);
+
+    // Create class without initial lang and lang in local storage
+    lieu = new Lieu(initialData);
+
+    const browserLang = helpers.getBrowserLang();
+    const langs = lieu.getLangs();
+    const currentLang = lieu.getLang();
+
+    // Compare name from browser lang in languages and currentLang name
+    expect(langs[browserLang].name).toBe(currentLang.name);
 });
