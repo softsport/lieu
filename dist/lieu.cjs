@@ -1,5 +1,5 @@
 /*!
- * Lieu v1.0.0 (https://github.com/LeadrateMSK/lieu#readme)
+ * Lieu v1.1.0 (https://github.com/LeadrateMSK/lieu#readme)
  * Copyright 2022 LeadrateMSK <web@leadrate.pro>
  * Licensed under MIT (https://github.com/LeadrateMSK/lieu/blob/master/LICENSE)
  */
@@ -101,17 +101,13 @@ class Lieu {
 
 
   #setInitialLanguage() {
-    // const initialLang = this.#initialData.initialLanguage;
     const userKeyLang = localStorage.getItem(STORAGE_KEY) ?? // from storage
     this.#initialData.initialLanguage ?? // from options
     helpers.getBrowserLang(); // from navigator
 
     if (helpers.hasKey(userKeyLang, this.#languages)) {
       this.setLang(userKeyLang);
-    } // else if (helpers.hasKey(initialLang, this.#languages)) {
-    // this.setLang(initialLang);
-    // }
-    else {
+    } else {
       this.setLang(Object.keys(this.#languages)[0]);
     }
   }
