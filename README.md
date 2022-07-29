@@ -73,7 +73,7 @@ import Lieu from 'lieu';
 const lieu = new Lieu({/* ... */});
 
 // localize strings
-lieu.localize('Hello'); // "Merhaba!" (if Turkish is selected)
+lieu.trans('Hello'); // "Merhaba!" (if Turkish is selected)
 
 // other methods
 lieu.setLang('tr'); // set new language

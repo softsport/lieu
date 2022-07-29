@@ -40,7 +40,6 @@ const helpers = {
 
 const STORAGE_KEY = 'lieu';
 const ATTRIBUTE_NAME = 'data-lieu';
-const DEFAULT_INTERPOLATION_REGEX = /%\{(.*?)\}/g;
 
 /**
  * @param initialData<Object>
@@ -56,8 +55,6 @@ class Lieu {
   #currentLanguage = null; // object
 
   #attributeName; // string
-
-  #defaultRegex = DEFAULT_INTERPOLATION_REGEX; // regex
 
   #onSetLang = (newLang, oldLang) => {};
   #onGetLang = () => {};
@@ -143,7 +140,7 @@ class Lieu {
     const $locales = Array.from(document.querySelectorAll(`[${this.#attributeName}]`));
     $locales.forEach($str => {
       const locale = $str.getAttribute(this.#attributeName);
-      $str.innerHTML = this.localize(locale);
+      $str.innerHTML = this.trans(locale);
     });
   }
   /**
@@ -153,7 +150,7 @@ class Lieu {
    */
 
 
-  localize(localeKey, options) {
+  trans(localeKey, options) {
     const {
       locales
     } = this.#currentLanguage;
@@ -168,7 +165,7 @@ class Lieu {
     }
 
     if (options) {
-      locale = locale.replace(this.#defaultRegex, (match, key) => options[key] || match);
+      locale = locale.replace(/%\{(.*?)\}/g, (match, key) => options[key] || match);
     }
 
     return locale;

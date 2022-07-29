@@ -107,7 +107,7 @@ test('String localize method', () => {
         initialData.languages.en.locales
     ).find((key) => key === keyToLocalize);
 
-    const localized = lieu.localize(keyFromInitialData);
+    const localized = lieu.trans(keyFromInitialData);
 
     expect(localized).toBe(
         initialData.languages[initialData.initialLanguage].locales[
@@ -203,7 +203,7 @@ test('Translate string with interpolation', () => {
         surname: 'Doe',
     };
 
-    expect(lieu.localize('HelloName', options)).toBe(
+    expect(lieu.trans('HelloName', options)).toBe(
         `Привет ${options.name}, ${options.surname}!`
     );
 });

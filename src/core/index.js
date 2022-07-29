@@ -106,7 +106,7 @@ export default class Lieu {
 
         $locales.forEach(($str) => {
             const locale = $str.getAttribute(this.#attributeName);
-            $str.innerHTML = this.localize(locale);
+            $str.innerHTML = this.trans(locale);
         });
     }
 
@@ -115,7 +115,7 @@ export default class Lieu {
      * @param localeKey<String>
      * @param options<Object>
      */
-    localize(localeKey, options) {
+    trans(localeKey, options) {
         const { locales } = this.#currentLanguage;
         let locale = locales[localeKey];
 
