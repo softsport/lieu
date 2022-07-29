@@ -131,7 +131,6 @@ export default class Lieu {
                 (match, key) => options[key] || match
             );
         }
-
         return locale;
     }
 
