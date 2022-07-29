@@ -58,18 +58,20 @@ export default class Lieu {
 
     // Set initial language from languages
     #setInitialLanguage() {
-        const initialLang = this.#initialData.initialLanguage;
+        // const initialLang = this.#initialData.initialLanguage;
 
         const userKeyLang =
             localStorage.getItem(STORAGE_KEY) ?? // from storage
             this.#initialData.initialLanguage ?? // from options
-            helpers.getBrowserLang(); // from userAgent
+            helpers.getBrowserLang(); // from navigator
 
         if (helpers.hasKey(userKeyLang, this.#languages)) {
             this.setLang(userKeyLang);
-        } else if (helpers.hasKey(initialLang, this.#languages)) {
-            this.setLang(initialLang);
-        } else {
+        }
+        // else if (helpers.hasKey(initialLang, this.#languages)) {
+        // this.setLang(initialLang);
+        // }
+        else {
             this.setLang(Object.keys(this.#languages)[0]);
         }
     }
