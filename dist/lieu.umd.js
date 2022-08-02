@@ -3,27 +3,28 @@
  * Copyright 2022 LeadrateMSK <web@leadrate.pro>
  * Licensed under MIT (https://github.com/LeadrateMSK/lieu/blob/master/LICENSE)
  */
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+(function (factory) {
     typeof define === 'function' && define.amd ? define(factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.lieu = factory());
-})(this, (function () { 'use strict';
+    factory();
+})((function () { 'use strict';
 
-    const helpers = {
+    class Helpers {
       // Checks if passed object is object or not
-      isObject: obj => {
+      static isObject(obj) {
         return typeof obj === 'object';
-      },
-      // Checks if passed object is funcion or not
-      isFunction: func => {
+      } // Checks if passed object is funcion or not
+
+
+      static isFunction(func) {
         return typeof func === 'function';
-      },
-      // Returns parsed from JSON object or null
-      fromJson: obj => {
+      } // Returns parsed from JSON object or null
+
+
+      static fromJson(obj) {
         try {
           const languagesFromJson = JSON.parse(obj);
 
-          if (typeof languagesFromJson === 'object') {
+          if (this.isObject(languagesFromJson)) {
             return languagesFromJson;
           } else {
             return null;
@@ -31,16 +32,86 @@
         } catch {
           return null;
         }
-      },
-      // Return browser language
-      getBrowserLang: () => {
+      } // Return browser language
+
+
+      static getBrowserLang() {
         return navigator.language.slice(0, 2);
-      },
-      // Check key existing in object
-      hasKey: (key, obj) => {
+      } // Check key existing in object
+
+
+      static hasKey(key, obj) {
         return Object.keys(obj).indexOf(key) !== -1;
+      } // Split string by delimiter, returns array<String>
+
+
+      static findAllSubstrings(string) {
+        const regexp = /\|[[{\d+]/g;
+        const subStrings = [];
+
+        function findDelimiter(str) {
+          const delimiterIndex = str.search(regexp);
+
+          if (delimiterIndex !== -1) {
+            subStrings.push(str.substring(0, delimiterIndex));
+            findDelimiter(str.substring(delimiterIndex + 1));
+          } else {
+            subStrings.push(str);
+          }
+        }
+
+        findDelimiter(string);
+        return subStrings;
       }
-    };
+      /**
+       * Returns pluralized string depending on passed @param count
+       * @param string<String>
+       * @param count<Number>
+       */
+
+
+      static pluralizeString(string, count) {
+        // [num,num] {num,num} [num] {num} [num,*] {num,*}
+        const regex = /[[{]\d+,{0,1}\d{0,}\*{0,1}[\]}]/g;
+        const subStrings = this.findAllSubstrings(string);
+        let locale;
+
+        for (let i = 0; i < subStrings.length; i++) {
+          const subString = subStrings[i];
+          const result = subString.match(regex);
+
+          if (result) {
+            // Set default value for the first time
+            if (!locale) {
+              locale = subString.replace(regex, '');
+              continue;
+            }
+
+            const resultNumbers = []; // Remove array/obj brackets and split string by comma
+
+            resultNumbers.push(...result[0].replace(/[[{]|[\]}]/g, '').split(',')); // Check if matched plural count more or equal passed count
+
+            if (resultNumbers.length >= 2) {
+              if (resultNumbers[1] === '*' && count >= resultNumbers[0]) {
+                locale = subString.replace(regex, '');
+                break;
+              } else if (resultNumbers[0] <= count && resultNumbers[1] >= count) {
+                locale = subString.replace(regex, '');
+                break;
+              }
+            } else {
+              if (resultNumbers[0] === count) {
+                locale = subString.replace(regex, '');
+                break;
+              }
+            }
+          }
+        }
+
+        return locale;
+      }
+
+    }
 
     const STORAGE_KEY = 'lieu';
     const ATTRIBUTE_NAME = 'data-lieu';
@@ -80,8 +151,8 @@
       #initLanguages() {
         let initialLanguages = this.#initialData.languages;
 
-        if (!helpers.isObject(initialLanguages)) {
-          initialLanguages = helpers.fromJson(initialLanguages);
+        if (!Helpers.isObject(initialLanguages)) {
+          initialLanguages = Helpers.fromJson(initialLanguages);
         }
 
         this.#languages = initialLanguages;
@@ -89,11 +160,11 @@
 
 
       #setHooks() {
-        if (helpers.isFunction(this.#initialData.onSetLang)) {
+        if (Helpers.isFunction(this.#initialData.onSetLang)) {
           this.#onSetLang = this.#initialData.onSetLang;
         }
 
-        if (helpers.isFunction(this.#initialData.onGetLang)) {
+        if (Helpers.isFunction(this.#initialData.onGetLang)) {
           this.#onGetLang = this.#initialData.onGetLang;
         }
       } // Set custom data attribute
@@ -107,9 +178,9 @@
       #setInitialLanguage() {
         const userKeyLang = localStorage.getItem(STORAGE_KEY) ?? // from storage
         this.#initialData.initialLanguage ?? // from options
-        helpers.getBrowserLang(); // from navigator
+        Helpers.getBrowserLang(); // from navigator
 
-        if (helpers.hasKey(userKeyLang, this.#languages)) {
+        if (Helpers.hasKey(userKeyLang, this.#languages)) {
           this.setLang(userKeyLang);
         } else {
           this.setLang(Object.keys(this.#languages)[0]);
@@ -125,7 +196,7 @@
         const newLanguage = this.#languages[langKey];
         const oldLanguage = this.#currentLanguage;
 
-        if (!helpers.hasKey(langKey, this.#languages)) {
+        if (!Helpers.hasKey(langKey, this.#languages)) {
           console.error(`Lieu | Language key "${langKey}" not found in languages!`);
           return;
         }
@@ -147,15 +218,27 @@
       /**
        * Return value from currentLanguage.locales or null
        * @param localeKey<String>
-       * @param options<Object>
+       * @param arg1<String|Object> not required
+       * @param arg2<String|Object> not required
        */
 
 
-      trans(localeKey, options) {
+      trans(localeKey, arg1, arg2) {
         const {
           locales
         } = this.#currentLanguage;
+        const options = [arg1, arg2];
         let locale = locales[localeKey];
+        let interpolationObj;
+        let pluralNum;
+
+        if (Helpers.isObject(options[0])) {
+          interpolationObj = options[0];
+          pluralNum = options[1];
+        } else {
+          interpolationObj = options[1];
+          pluralNum = options[0];
+        }
 
         if (!locale) {
           locale = localeKey;
@@ -165,8 +248,12 @@
           }
         }
 
-        if (options) {
-          locale = locale.replace(/%\{(.*?)\}/g, (match, key) => options[key] || match);
+        if (interpolationObj) {
+          locale = locale.replace(/%\{(.*?)\}/g, (match, key) => interpolationObj[key] || match);
+        }
+
+        if (pluralNum) {
+          locale = Helpers.pluralizeString(locale, pluralNum);
         }
 
         return locale;
@@ -184,7 +271,7 @@
           return this.#currentLanguage;
         }
 
-        if (!helpers.hasKey(langKey, this.#languages)) {
+        if (!Helpers.hasKey(langKey, this.#languages)) {
           console.error(`Lieu | Language key "${langKey}" not found in languages!`);
           return;
         }
@@ -199,7 +286,7 @@
 
     }
 
-    return Lieu;
+    window.Lieu = Lieu;
 
 }));
-//# sourceMappingURL=lieu.js.map
+//# sourceMappingURL=lieu.umd.js.map
