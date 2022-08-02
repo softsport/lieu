@@ -4,7 +4,7 @@
  */
 import testDom from './test-dom';
 import Lieu from '../dist/lieu.es';
-import helpers from '../src/core/helpers';
+import Helpers from '../src/core/helpers';
 import { STORAGE_KEY, ATTRIBUTE_NAME } from '../src/core/const';
 
 let initialData;
@@ -24,6 +24,7 @@ beforeEach(() => {
                     Hello: 'Привет!',
                     Bye: 'Пока!',
                     HelloName: 'Привет %{name}, %{surname}!',
+                    Apples: '{1}Одно яблоко|[2,5]Немного %{name}|{5,*}Очень много %{name}',
                 },
             },
             en: {
@@ -32,6 +33,7 @@ beforeEach(() => {
                     Hello: 'Hello!',
                     Bye: 'Bye!',
                     HelloName: 'Hello %{name}, %{surname}!',
+                    Apples: '{1}There is one apple|[2,5]There are some %{name}|{5,*}There are many %{name}',
                 },
             },
         },
@@ -236,10 +238,38 @@ test('Initialization with browser language (without initial language and languag
     // Create class without initial lang and lang in local storage
     lieu = new Lieu(initialData);
 
-    const browserLang = helpers.getBrowserLang();
+    const browserLang = Helpers.getBrowserLang();
     const langs = lieu.getLangs();
     const currentLang = lieu.getLang();
 
     // Compare name from browser lang in languages and currentLang name
     expect(langs[browserLang].name).toBe(currentLang.name);
+});
+
+describe('String pluralization:', () => {
+    beforeEach(() => {
+        lieu.setLang('en');
+    });
+
+    test('with {num} in string', () => {
+        expect(lieu.trans('Apples', 1)).toBe('There is one apple');
+    });
+
+    test('with interpolation as the third argument and [num,num] in string', () => {
+        expect(lieu.trans('Apples', 3, { name: 'apples' })).toBe(
+            'There are some apples'
+        );
+    });
+
+    test('with interpolation as the second argument', () => {
+        expect(lieu.trans('Apples', { name: 'apples' }, 3)).toBe(
+            'There are some apples'
+        );
+    });
+
+    test('with {num,*} in string', () => {
+        expect(lieu.trans('Apples', 30, { name: 'apples' })).toBe(
+            'There are many apples'
+        );
+    });
 });

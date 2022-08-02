@@ -1,4 +1,4 @@
-import helpers from './helpers';
+import Helpers from './helpers';
 import { STORAGE_KEY, ATTRIBUTE_NAME } from './const';
 
 /**
@@ -33,8 +33,8 @@ export default class Lieu {
     #initLanguages() {
         let initialLanguages = this.#initialData.languages;
 
-        if (!helpers.isObject(initialLanguages)) {
-            initialLanguages = helpers.fromJson(initialLanguages);
+        if (!Helpers.isObject(initialLanguages)) {
+            initialLanguages = Helpers.fromJson(initialLanguages);
         }
 
         this.#languages = initialLanguages;
@@ -42,11 +42,11 @@ export default class Lieu {
 
     // Set hooks if they exist in initial data
     #setHooks() {
-        if (helpers.isFunction(this.#initialData.onSetLang)) {
+        if (Helpers.isFunction(this.#initialData.onSetLang)) {
             this.#onSetLang = this.#initialData.onSetLang;
         }
 
-        if (helpers.isFunction(this.#initialData.onGetLang)) {
+        if (Helpers.isFunction(this.#initialData.onGetLang)) {
             this.#onGetLang = this.#initialData.onGetLang;
         }
     }
@@ -61,9 +61,9 @@ export default class Lieu {
         const userKeyLang =
             localStorage.getItem(STORAGE_KEY) ?? // from storage
             this.#initialData.initialLanguage ?? // from options
-            helpers.getBrowserLang(); // from navigator
+            Helpers.getBrowserLang(); // from navigator
 
-        if (helpers.hasKey(userKeyLang, this.#languages)) {
+        if (Helpers.hasKey(userKeyLang, this.#languages)) {
             this.setLang(userKeyLang);
         } else {
             this.setLang(Object.keys(this.#languages)[0]);
@@ -78,7 +78,7 @@ export default class Lieu {
         const newLanguage = this.#languages[langKey];
         const oldLanguage = this.#currentLanguage;
 
-        if (!helpers.hasKey(langKey, this.#languages)) {
+        if (!Helpers.hasKey(langKey, this.#languages)) {
             console.error(
                 `Lieu | Language key "${langKey}" not found in languages!`
             );
@@ -109,11 +109,24 @@ export default class Lieu {
     /**
      * Return value from currentLanguage.locales or null
      * @param localeKey<String>
-     * @param options<Object>
+     * @param arg1<String|Object> not required
+     * @param arg2<String|Object> not required
      */
-    trans(localeKey, options) {
+    trans(localeKey, arg1, arg2) {
         const { locales } = this.#currentLanguage;
+        const options = [arg1, arg2];
+
         let locale = locales[localeKey];
+        let interpolationObj;
+        let pluralNum;
+
+        if (Helpers.isObject(options[0])) {
+            interpolationObj = options[0];
+            pluralNum = options[1];
+        } else {
+            interpolationObj = options[1];
+            pluralNum = options[0];
+        }
 
         if (!locale) {
             locale = localeKey;
@@ -125,12 +138,17 @@ export default class Lieu {
             }
         }
 
-        if (options) {
+        if (interpolationObj) {
             locale = locale.replace(
                 /%\{(.*?)\}/g,
-                (match, key) => options[key] || match
+                (match, key) => interpolationObj[key] || match
             );
         }
+
+        if (pluralNum) {
+            locale = Helpers.pluralizeString(locale, pluralNum);
+        }
+
         return locale;
     }
 
@@ -145,7 +163,7 @@ export default class Lieu {
             return this.#currentLanguage;
         }
 
-        if (!helpers.hasKey(langKey, this.#languages)) {
+        if (!Helpers.hasKey(langKey, this.#languages)) {
             console.error(
                 `Lieu | Language key "${langKey}" not found in languages!`
             );
