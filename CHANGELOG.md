@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 1.2.0 - 2022-08-02
+
+### Added
+
+- Pluralization (+ tests) #8
+
+### Bugfix
+
+- fix umd method #8
+
+Thanks co-authored [@AndyKuhorenko](https://github.com/AndyKuhorenko)
+
 ## 1.1.0 - 2022-07-29
 
 ### Added
