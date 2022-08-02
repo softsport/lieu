@@ -46,6 +46,8 @@ const lieu = new Lieu({
                 'Hello': 'Hello!',
                 'Bye': 'Bye!',
                 'HelloName': 'Hello %{name} %{surname}!',
+                // [] and {} brackets are acceptable
+                'Apples': '{1}There is one apple|[2,5]There are some %{name}|{5,*}There are many %{name}',
             },
         },
         tr: {
@@ -76,13 +78,22 @@ const lieu = new Lieu({/* ... */});
 
 // translate strings
 lieu.trans('Hello'); // "Merhaba!" (if Turkish is selected)
-// replacing parameters in translation strings
-lieu.trans('HelloName', { name: 'John', surname: 'Doe' }); // "Hello John Doe!" (if English is selected)
 
 // other methods
 lieu.setLang('tr'); // set new language
 lieu.getLang('tr'); // get language
 lieu.getLangs(); // get all languages
+```
+#### Replacing Parameters In Translation Strings
+```javascript
+lieu.trans('HelloName', { name: 'John', surname: 'Doe' }); // "Hello John Doe!" (if English is selected)
+```
+
+#### Pluralization
+```javascript
+lieu.trans('Apples', 1); // "There is one apple" (if English is selected)
+lieu.trans('Apples', 3, { name: 'apples' }); // "There are some apples"
+lieu.trans('Apples', { name: 'apples' }, 30); // "There are many apples"
 ```
 
 ### Usage in HTML
