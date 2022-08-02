@@ -18,6 +18,7 @@ function getHeader() {
 }
 
 const pathCore = path.join(__dirname, 'src/lieu.js');
+const pathUmd = path.join(__dirname, 'src/lieu.umd.js');
 
 const bundles = [
     {
@@ -37,20 +38,20 @@ const bundles = [
         },
     },
     {
-        input: pathCore,
+        input: pathUmd,
         output: {
             banner: getHeader(),
             name: 'lieu',
-            file: path.join(__dirname, 'dist/lieu.js'),
+            file: path.join(__dirname, 'dist/lieu.umd.js'),
             format: 'umd',
         },
     },
     {
-        input: pathCore,
+        input: pathUmd,
         output: {
             banner: getHeader(),
             name: 'lieu',
-            file: path.join(__dirname, 'dist/lieu.min.js'),
+            file: path.join(__dirname, 'dist/lieu.umd.min.js'),
             format: 'umd',
         },
     },
