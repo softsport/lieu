@@ -3,7 +3,7 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/LeadrateMSK/lieu/total)
 ![GitHub issues](https://img.shields.io/github/issues/LeadrateMSK/lieu)
 ![GitHub package.json version (subfolder of monorepo)](https://img.shields.io/github/package-json/v/LeadrateMSK/lieu)
-![jsDelivr hits (GitHub)](https://img.shields.io/jsdelivr/gh/hm/LeadrateMSK/lieu)
+[![](https://data.jsdelivr.com/v1/package/npm/lieu/badge?style=rounded)](https://www.jsdelivr.com/package/npm/lieu)
 
 JavaScript plugin for adding multilingual website.
 
