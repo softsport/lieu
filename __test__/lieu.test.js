@@ -3,7 +3,7 @@
  * @jest-environment-options {"url": "https://jestjs.io/"}
  */
 import testDom from './test-dom';
-import Lieu from '../dist/lieu.es';
+import Lieu from '../dist/lieu';
 import Helpers from '../src/core/helpers';
 import { STORAGE_KEY, ATTRIBUTE_NAME } from '../src/core/const';
 
