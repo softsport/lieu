@@ -1,12 +1,13 @@
 /*!
- * Lieu v1.2.0 (https://github.com/LeadrateMSK/lieu#readme)
+ * Lieu v1.2.1 (https://github.com/LeadrateMSK/lieu#readme)
  * Copyright 2022 LeadrateMSK <web@leadrate.pro>
  * Licensed under MIT (https://github.com/LeadrateMSK/lieu/blob/master/LICENSE)
  */
-(function (factory) {
+(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
-    factory();
-})((function () { 'use strict';
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.lieu = factory());
+})(this, (function () { 'use strict';
 
     class Helpers {
       // Checks if passed object is object or not
@@ -259,9 +260,9 @@
         return locale;
       }
       /** Return language object from languages class field by its' key
-      * or current langauge if @param langKey is not set
-      @param langKey<String> not required
-      */
+       * or current langauge if @param langKey is not set
+       @param langKey<String> not required
+       */
 
 
       getLang(langKey) {
@@ -286,7 +287,7 @@
 
     }
 
-    window.Lieu = Lieu;
+    return Lieu;
 
 }));
 //# sourceMappingURL=lieu.umd.js.map

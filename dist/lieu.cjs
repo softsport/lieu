@@ -1,5 +1,5 @@
 /*!
- * Lieu v1.2.0 (https://github.com/LeadrateMSK/lieu#readme)
+ * Lieu v1.2.1 (https://github.com/LeadrateMSK/lieu#readme)
  * Copyright 2022 LeadrateMSK <web@leadrate.pro>
  * Licensed under MIT (https://github.com/LeadrateMSK/lieu/blob/master/LICENSE)
  */
@@ -256,9 +256,9 @@ class Lieu {
     return locale;
   }
   /** Return language object from languages class field by its' key
-  * or current langauge if @param langKey is not set
-  @param langKey<String> not required
-  */
+   * or current langauge if @param langKey is not set
+   @param langKey<String> not required
+   */
 
 
   getLang(langKey) {

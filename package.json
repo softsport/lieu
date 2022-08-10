@@ -1,12 +1,12 @@
 {
   "name": "lieu",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Javascript plugin for localize string.",
-  "main": "dist/lieu.cjs",
-  "module": "dist/lieu.es.js",
-  "jsdelivr": "dist/lieu.min.js",
-  "umd:main": "dist/lieu.js",
-  "cdn": "dist/lieu.min.js",
+  "main": "dist/lieu.js",
+  "module": "dist/lieu.cjs",
+  "jsdelivr": "dist/lieu.umd.min.js",
+  "umd:main": "dist/lieu.umd.min.js",
+  "cdn": "dist/lieu.umd.min.js",
   "scripts": {
     "test": "jest",
     "cover": "jest --coverage",
