@@ -26,7 +26,11 @@ const lieu = new Lieu({/* ... */});
 
 ### UMD (+ jsDelivr)
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lieu"></script>
+<script src="https://cdn.jsdelivr.net/npm/lieu@1.2.1"></script>
+
+<script>
+const lieu_ctx = new lieu({/* ... */});
+</script>
 ```
 
 ## Usage
