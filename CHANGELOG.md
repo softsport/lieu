@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.2.1 - 2022-08-10
+
+### Bugfix
+
+- close issue #9
+
+Co-authored-by: @rah-emil
+
 ## 1.2.0 - 2022-08-02
 
 ### Added
