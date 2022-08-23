@@ -1,9 +1,9 @@
 # Lieu
-![GitHub](https://img.shields.io/github/license/LeadrateMSK/lieu)
-![GitHub all releases](https://img.shields.io/github/downloads/LeadrateMSK/lieu/total)
-![GitHub issues](https://img.shields.io/github/issues/LeadrateMSK/lieu)
-![GitHub package.json version (subfolder of monorepo)](https://img.shields.io/github/package-json/v/LeadrateMSK/lieu)
+![npm bundle size](https://img.shields.io/bundlephobia/min/lieu)
 [![](https://data.jsdelivr.com/v1/package/npm/lieu/badge?style=rounded)](https://www.jsdelivr.com/package/npm/lieu)
+![npm](https://img.shields.io/npm/dm/lieu)
+![GitHub](https://img.shields.io/github/license/LeadrateMSK/lieu)
+![GitHub issues](https://img.shields.io/github/issues/LeadrateMSK/lieu)
 
 JavaScript plugin for adding multilingual website.
 
