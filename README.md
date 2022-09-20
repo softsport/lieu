@@ -104,6 +104,12 @@ lieu.trans('Apples', { name: 'apples' }, 30); // "There are many apples"
 ```html
 <span data-lieu="Hello"></span>
 <span data-lieu="Bye"></span>
+<span data-lieu="Apples" data-lieu-name="apples" data-lieu-plural="4"></span>
+<!-- After Initialization becomes: -->
+<span data-lieu="Apples" data-lieu-name="apples" data-lieu-plural="4">
+    There are some apples
+</span>
+<!-- NOTE: Data attribute for pluralization always should be "plural"! -->
 
 <script src="https://cdn.jsdelivr.net/npm/lieu"></script>
 
