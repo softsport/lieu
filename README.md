@@ -26,7 +26,7 @@ const lieu = new Lieu({/* ... */});
 
 ### UMD (+ jsDelivr)
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lieu@1.3.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/lieu@1.3.1"></script>
 
 <script>
 const lieu_ctx = new lieu({/* ... */});
@@ -125,6 +125,7 @@ lieu.trans('Apples', { name: 'apples' }, 30); // "There are many apples"
 <!-- NOTE: Data attribute for pluralization always should be "plural"! -->
 ```
 
+```javascript
 <script src="https://cdn.jsdelivr.net/npm/lieu"></script>
 
 <script>
