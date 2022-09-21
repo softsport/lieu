@@ -26,7 +26,7 @@ const lieu = new Lieu({/* ... */});
 
 ### UMD (+ jsDelivr)
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lieu@1.2.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/lieu@1.3.0"></script>
 
 <script>
 const lieu_ctx = new lieu({/* ... */});
@@ -104,12 +104,26 @@ lieu.trans('Apples', { name: 'apples' }, 30); // "There are many apples"
 ```html
 <span data-lieu="Hello"></span>
 <span data-lieu="Bye"></span>
+```
+
+#### Replacing Parameters In Translation Strings
+```html
+<h1 data-lieu="HelloName" data-lieu-name="John" data-lieu-surname="Doe"></h1>
+<!-- After Initialization becomes (if English is selected): -->
+<h1 data-lieu="HelloName" data-lieu-name="John" data-lieu-surname="Doe">
+    Hello John, Doe!
+</h1>
+```
+
+#### Pluralization
+```html
 <span data-lieu="Apples" data-lieu-name="apples" data-lieu-plural="4"></span>
 <!-- After Initialization becomes: -->
 <span data-lieu="Apples" data-lieu-name="apples" data-lieu-plural="4">
     There are some apples
 </span>
 <!-- NOTE: Data attribute for pluralization always should be "plural"! -->
+```
 
 <script src="https://cdn.jsdelivr.net/npm/lieu"></script>
 
