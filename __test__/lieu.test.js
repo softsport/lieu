@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  * @jest-environment-options {"url": "https://jestjs.io/"}
  */
-import testDom from './test-dom';
+import { testDom, interpolationTestDom } from './test-dom';
 import Lieu from '../dist/lieu';
 import Helpers from '../src/core/helpers';
 import { STORAGE_KEY, ATTRIBUTE_NAME } from '../src/core/const';
@@ -271,5 +271,45 @@ describe('String pluralization:', () => {
         expect(lieu.trans('Apples', 30, { name: 'apples' })).toBe(
             'There are many apples'
         );
+    });
+});
+
+describe('DOM elements interpolation and pluraliaztion by data attributes:', () => {
+    beforeEach(() => {
+        document.body.innerHTML = interpolationTestDom();
+        lieu.setLang('en');
+    });
+
+    test('interpolation', () => {
+        const translatedString = 'Hello John, Doe!';
+
+        const elemToLocalize = Array.from(
+            document.querySelectorAll(`[${ATTRIBUTE_NAME}="HelloName"]`)
+        )[0];
+
+        // Check for specific elem to have correct text content after translation
+        expect(elemToLocalize.textContent).toBe(translatedString);
+    });
+
+    test('pluralization and interpolation', () => {
+        const translatedString = 'There are some apples';
+
+        const elemToLocalize = Array.from(
+            document.querySelectorAll(`[${ATTRIBUTE_NAME}-name="apples"]`)
+        )[0];
+
+        // Check for specific elem to have correct text content after translation
+        expect(elemToLocalize.textContent).toBe(translatedString);
+    });
+
+    test('pluralization and interpolation ({num,*} in string)', () => {
+        const translatedString = 'There are many oranges';
+
+        const elemToLocalize = Array.from(
+            document.querySelectorAll(`[${ATTRIBUTE_NAME}-name="oranges"]`)
+        )[0];
+
+        // Check for specific elem to have correct text content after translation
+        expect(elemToLocalize.textContent).toBe(translatedString);
     });
 });

@@ -1,5 +1,5 @@
 /*!
- * Lieu v1.2.1 (https://github.com/LeadrateMSK/lieu#readme)
+ * Lieu v1.3.0 (https://github.com/LeadrateMSK/lieu#readme)
  * Copyright 2022 LeadrateMSK <web@leadrate.pro>
  * Licensed under MIT (https://github.com/LeadrateMSK/lieu/blob/master/LICENSE)
  */
@@ -116,6 +116,7 @@
 
     const STORAGE_KEY = 'lieu';
     const ATTRIBUTE_NAME = 'data-lieu';
+    const PLURAL = 'plural';
 
     /**
      * @param initialData<Object>
@@ -212,8 +213,26 @@
       #localizeDomElems() {
         const $locales = Array.from(document.querySelectorAll(`[${this.#attributeName}]`));
         $locales.forEach($str => {
-          const locale = $str.getAttribute(this.#attributeName);
-          $str.innerHTML = this.trans(locale);
+          const localeAttributes = $str.getAttributeNames();
+          let localeKey;
+          let pluralNum;
+          const interpolationObj = {};
+          localeAttributes.forEach(attr => {
+            // If data-lieu-... attribute (or custom)
+            if (attr.includes(this.#attributeName.toLowerCase())) {
+              const attributeValue = $str.getAttribute(attr); // Set locale key, plural number and interpolation properties
+
+              if (attr === this.#attributeName) {
+                localeKey = attributeValue;
+              } else if (attr.includes(PLURAL) && !isNaN(attributeValue)) {
+                pluralNum = Number(attributeValue);
+              } else {
+                const objKey = attr.replace(`${this.#attributeName.toLowerCase()}-`, '');
+                interpolationObj[objKey] = attributeValue;
+              }
+            }
+          });
+          $str.innerHTML = this.trans(localeKey, interpolationObj, pluralNum);
         });
       }
       /**

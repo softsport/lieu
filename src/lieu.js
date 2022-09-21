@@ -1,5 +1,5 @@
 import Helpers from './core/helpers';
-import { STORAGE_KEY, ATTRIBUTE_NAME } from './core/const';
+import { STORAGE_KEY, ATTRIBUTE_NAME, PLURAL } from './core/const';
 
 /**
  * @param initialData<Object>
@@ -101,8 +101,36 @@ export default class Lieu {
         );
 
         $locales.forEach(($str) => {
-            const locale = $str.getAttribute(this.#attributeName);
-            $str.innerHTML = this.trans(locale);
+            const localeAttributes = $str.getAttributeNames();
+            let localeKey;
+            let pluralNum;
+            const interpolationObj = {};
+
+            localeAttributes.forEach((attr) => {
+                // If data-lieu-... attribute (or custom)
+                if (attr.includes(this.#attributeName.toLowerCase())) {
+                    const attributeValue = $str.getAttribute(attr);
+
+                    // Set locale key, plural number and interpolation properties
+                    if (attr === this.#attributeName) {
+                        localeKey = attributeValue;
+                    } else if (
+                        attr.includes(PLURAL) &&
+                        !isNaN(attributeValue)
+                    ) {
+                        pluralNum = Number(attributeValue);
+                    } else {
+                        const objKey = attr.replace(
+                            `${this.#attributeName.toLowerCase()}-`,
+                            ''
+                        );
+
+                        interpolationObj[objKey] = attributeValue;
+                    }
+                }
+            });
+
+            $str.innerHTML = this.trans(localeKey, interpolationObj, pluralNum);
         });
     }
 
