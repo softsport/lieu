@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 1.3.0 - 2022-09-21
+
+### Features
+
+- pluralization and interpolation by data attributes #17
+
+### Fixes
+
+- Bump @rollup/plugin-node-resolve from 13.3.0 to 14.1.0 #16
+
+Thank @AndyKuhorenko
+
 ## 1.2.1 - 2022-08-10
 
 ### Bugfix
