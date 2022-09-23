@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.3.1 - 2022-09-23
+
+### Fixes
+
+- fix docs #19
+
+Thank @AndyKuhorenko
+
 ## 1.3.0 - 2022-09-21
 
 ### Features
