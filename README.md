@@ -33,6 +33,17 @@ const lieu_ctx = new lieu({/* ... */});
 </script>
 ```
 
+### Vue 3
+```js
+import { createApp } from 'vue';
+import App from 'App.vue';
+import lieu from 'lieu/vue';
+
+createApp(App)
+    .use(lieu, {/* ... */})
+    .mount('#app');
+```
+
 ## Usage
 ### Initialization
 ```javascript
@@ -131,6 +142,31 @@ lieu.trans('Apples', { name: 'apples' }, 30); // "There are many apples"
 <script>
     const lieu = new Lieu({ /* ... */ });
 </script>
+```
+
+### Usage in Vue 3
+```vue
+<script setup>
+import { inject } from 'vue';
+
+// Get Lieu instance
+const lieu = inject('lieu');
+</script>
+
+<template>
+<div>
+    <button @click="$lieu.setLang('ru')">
+        RU
+    </button>
+
+    <button @click="lieu.setLang('en')">
+        EN
+    </button>
+
+    <span v-lieu="'Hello'" />
+    <span v-lieu="'Hello', {name: 'John'}" />
+</div>
+</template>
 ```
 
 ## Options
