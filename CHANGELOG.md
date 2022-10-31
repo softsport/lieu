@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.4.0 - 2022-10-31
+
+### Feat
+
+- added support Vue 3 #28
+
 ## 1.3.1 - 2022-09-23
 
 ### Fixes
