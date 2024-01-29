@@ -41,7 +41,7 @@
     "babel-jest": "^29.0.2",
     "babel-plugin-annotate-pure-calls": "^0.4.0",
     "eslint": "^8.17.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^27.0.1",
